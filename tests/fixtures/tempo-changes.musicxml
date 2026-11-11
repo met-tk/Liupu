@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<score-partwise version="4.0">
+  <work><work-title>Tempo study · 60 / 120 / 90</work-title></work>
+  <part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes><divisions>4</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>
+      <barline location="left"><repeat direction="forward"/></barline>
+      <direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>60</per-minute></metronome></direction-type><sound tempo="60"/></direction>
+      <note id="tempo-c"><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>quarter</type></note>
+      <note id="tempo-d"><pitch><step>D</step><octave>4</octave></pitch><duration>4</duration><type>quarter</type></note>
+      <direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>120</per-minute></metronome></direction-type><sound tempo="120"/></direction>
+      <note id="tempo-e"><pitch><step>E</step><octave>4</octave></pitch><duration>4</duration><type>quarter</type></note>
+      <note id="tempo-f"><pitch><step>F</step><octave>4</octave></pitch><duration>4</duration><type>quarter</type></note>
+    </measure>
+    <measure number="2">
+      <attributes><time><beats>6</beats><beat-type>8</beat-type></time></attributes>
+      <direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><beat-unit-dot/><per-minute>60</per-minute></metronome></direction-type></direction>
+      <note id="tempo-g"><pitch><step>G</step><octave>4</octave></pitch><duration>6</duration><type>quarter</type><dot/></note>
+      <note id="tempo-a"><pitch><step>A</step><octave>4</octave></pitch><duration>6</duration><type>quarter</type><dot/></note>
+      <barline location="right"><repeat direction="backward"/></barline>
+    </measure>
+  </part>
+</score-partwise>

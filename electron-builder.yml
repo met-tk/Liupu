@@ -1,0 +1,66 @@
+appId: studio.liupu.desktop
+productName: 流谱 Studio
+executableName: Liupu Studio
+publish: null
+directories:
+  output: release
+  buildResources: desktop
+asar: true
+npmRebuild: false
+files:
+  - desktop/main.mjs
+  - desktop/preload.cjs
+  - desktop/visual-storage.mjs
+  - src/composition.mjs
+  - src/motion-program.mjs
+  - src/effect-library.mjs
+  - src/timing.mjs
+  - src/preferences.mjs
+  - src/i18n.mjs
+  - src/i18n-catalog.mjs
+  - desktop/icon.ico
+  - server.mjs
+  - vst-bridge.mjs
+  - package.json
+  - '!node_modules/**'
+extraResources:
+  - from: dist
+    to: web
+    filter:
+      - '**/*'
+      - '!**/*qa*'
+      - '!**/*audit*'
+      - '!**/*checks*'
+      - '!notation-marks.musicxml'
+      - '!tied-chords.musicxml'
+  - from: native/bin/LiupuVSTHost.exe
+    to: native/LiupuVSTHost.exe
+  - from: .desktop-build/licenses
+    to: licenses
+  - from: .
+    to: documentation
+    filter:
+      - README.md
+      - EFFECTS.md
+      - DESKTOP.md
+      - AE-EXPORT.md
+      - MOTION-DESIGN.md
+      - COMPOSITION.md
+win:
+  icon: desktop/icon.ico
+  artifactName: Liupu-Studio-${version}-win-${arch}.${ext}
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+nsis:
+  artifactName: Liupu-Studio-${version}-Setup-${arch}.${ext}
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 流谱 Studio
+  runAfterFinish: false
+  installerLanguages: [zh_CN, ja_JP, en_US]

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="流谱 Studio — 将 MusicXML 乐谱变成流动的音乐影像。本地网页原型。">
+  <title>流谱 Studio · 乐谱影像工作台</title>
+  <link rel="icon" type="image/png" href="./assets/brand/icon.png">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M12 11v6M12 11l4-1v6"/><ellipse cx="10.5" cy="17" rx="1.5" ry="1"/><ellipse cx="14.5" cy="16" rx="1.5" ry="1"/></symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24"><path d="M4 10v4M8 6v12M12 3v18M16 7v10M20 10v4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-start" viewBox="0 0 24 24"><path d="M6 5v14m13-14L8 12l11 7z"/></symbol>
+    <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 15V3m-4 4 4-4 4 4M5 13v7h14v-7"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zm12-1a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M4 11V9a2 2 0 0 1 2-2h14M8 21l-4-4 4-4m12 0v2a2 2 0 0 1-2 2H4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></symbol>
+    <symbol id="i-piano" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M9 4v16M15 4v16M6 4v8m6-8v8m6-8v8"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <button id="appSettings" class="brand" type="button" aria-label="软件设置" aria-haspopup="dialog"><img src="./assets/brand/mark.png" width="33" height="33" alt="" aria-hidden="true"><span>流谱<span class="brand-en">STUDIO</span></span></button>
+    <div class="project-title"><span id="projectName" data-user-content>Nocturne Op.9 No.2</span><span class="tag" id="demoTag">默认乐谱</span></div>
+    <div class="header-actions"><button id="focusBtn" class="subtle"><svg><use href="#i-expand"/></svg><span>专注预览</span></button><button id="exportBtn" class="primary" disabled><svg><use href="#i-export"/></svg>导出</button></div>
+  </header>
+  <main class="workspace">
+    <aside class="sources panel">
+      <div class="section-heading"><h2>项目素材</h2><button class="icon-button" id="importPlus" aria-label="导入 MusicXML 乐谱"><svg><use href="#i-plus"/></svg></button></div>
+      <button class="asset selected" id="scoreImport"><svg><use href="#i-file"/></svg><span><b id="scoreFilename" data-user-content>Chopin_Nocturne_Op9_No2.musicxml</b><small>MusicXML 乐谱</small></span><span class="asset-dot"></span></button>
+      <button class="asset audio-asset" id="audioImport"><svg><use href="#i-audio"/></svg><span><b id="audioFilename">添加演奏音频</b><small id="audioSubtitle">WAV · MP3 · M4A</small></span><svg class="small"><use href="#i-plus"/></svg></button>
+      <p class="quiet file-hint">拖入乐谱或音频，即刻开始创作。</p>
+      <section class="score-info"><h2>乐谱信息</h2><div><svg><use href="#i-piano"/></svg><span id="instrument">钢琴 · 双谱表</span></div><div class="info-pair"><span>拍号</span><b id="timeSignature">4 / 4</b></div><div class="info-pair"><span>速度</span><b id="scoreTempo">72 BPM</b></div><div class="info-pair"><span>小节</span><b id="measureCount">16</b></div></section>
+      <section class="workflow-note"><span class="tiny-dot"></span><p>让乐谱，随音乐流动。<small>先播放听一听，再试试右侧的动效预设。</small></p></section>
+      <div class="source-footer"><button id="loadDemo" class="text-button">载入演示乐谱</button><button id="downloadDemo" class="text-button">下载示例 MusicXML</button><button id="desktopHelp" class="text-button" hidden aria-haspopup="menu">帮助与说明</button><div class="local-status"><span></span>素材仅在本机处理</div></div>
+    </aside>
+    <section class="preview-column" aria-label="成片预览">
+      <div class="preview-toolbar"><div><span class="tiny-dot coral"></span><span>成片预览</span><span class="tempo-badge" id="liveTempo">72 BPM</span><span class="tempo-source">跟随乐谱速度</span></div><div><span id="aspectLabel">16:9</span><span class="toolbar-divider"></span><span>自适应</span><button id="settingsMobile" class="icon-button" aria-label="显示效果设置"><svg><use href="#i-settings"/></svg></button></div></div>
+      <div class="stage-wrap">
+        <div class="stage" id="stage"><canvas id="canvas" width="1920" height="1080" aria-label="动态五线谱预览">请使用支持 Canvas 的现代浏览器。</canvas><div id="loading" class="loading"><span class="spinner"></span><b>正在排版乐谱</b><span>准备好后，点击播放开始预览。</span></div><button class="exit-focus subtle" id="exitFocus"><svg><use href="#i-close"/></svg>退出专注</button></div>
+      </div>
+      <div class="transport">
+        <div class="transport-buttons"><button id="restart" class="icon-button" aria-label="回到开头"><svg><use href="#i-start"/></svg></button><button id="play" class="play-button" aria-label="播放" disabled><svg><use href="#i-play"/></svg></button><button id="loop" class="icon-button" aria-label="循环播放" aria-pressed="false"><svg><use href="#i-loop"/></svg></button></div>
+        <div class="time"><span id="currentTime">00:00</span><span class="quiet"> / <span id="duration">00:53</span></span></div>
+        <input id="seek" class="seek" type="range" min="0" max="53" step="0.01" value="0" aria-label="播放进度">
+        <label class="speed-label"><select id="speed" aria-label="播放速度"><option value=".5">0.5×</option><option value=".75">0.75×</option><option value="1" selected>1.0×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
+        <div class="volume"><svg><use href="#i-volume"/></svg><input id="volume" type="range" min="0" max="1" step=".01" value=".5" aria-label="音量"></div>
+      </div>
+    </section>
+    <aside class="inspector panel" aria-label="视觉设置">
+      <div class="inspector-tabs" role="tablist" aria-label="设置分类"><button id="effectsTab" class="active" role="tab" aria-selected="true" aria-controls="effectsPanel">动效</button><button id="appearanceTab" role="tab" aria-selected="false" aria-controls="appearancePanel" tabindex="-1">画面</button><button id="audioTab" role="tab" aria-selected="false" aria-controls="audioPanel" tabindex="-1">音频</button></div>
+      <div class="inspector-content" id="effectsPanel" role="tabpanel" aria-labelledby="effectsTab">
+        <label class="field"><span>谱面模式</span><select id="motion"><option value="sticky">固定谱头 · 平滑流动</option><option value="flow">横向流动</option><option value="page">分段扫描</option><option value="static">静态谱页 · 多行排版</option></select></label>
+        <section id="staticControls" hidden aria-label="静态谱页设置">
+          <p class="help">谱页保持静止，满页后切换。下方动画与消解适用于所有谱面模式。</p>
+          <div class="compact-pair"><label class="field"><span>每行小节</span><select id="pageBars"><option value="2">2 小节</option><option value="3">3 小节</option><option value="4" selected>4 小节</option></select></label><label class="field"><span>每页行数</span><select id="pageRows"><option value="1">1 行</option><option value="2" selected>2 行</option><option value="3">3 行</option></select></label></div>
+        </section>
+        <section class="effect-section" aria-labelledby="decayHeading">
+          <h2 id="decayHeading">谱面消解</h2>
+          <label class="field"><span>消解效果</span><select id="pageDecay"><option value="burn">余烬 · 焚毁</option><option value="dissolve">微尘 · 消解</option><option value="fade">柔和淡出</option><option value="none">保持可见</option></select></label>
+          <label class="field"><span>消解与谱面出场时机</span><select id="decayTrigger"><option value="measure">小节结束后等待</option><option value="progress">实时跟随播放进度</option></select></label>
+          <label class="field"><span>出场 / 消解偏移（秒）</span><input id="decayOffset" type="number" min="-120" max="120" step=".05" value="0" aria-describedby="decayOffsetHelp"></label>
+          <p class="help offset-help" id="decayOffsetHelp">负值提前，正值延后，范围 −120～120 秒。仅影响当前编辑对象。</p>
+          <div class="compact-pair" id="decayTiming"><label class="field"><span>等待（秒）</span><input id="decayDelay" type="number" min="0" max="4" step=".05" value=".45"></label><label class="field"><span>持续（秒）</span><input id="decayDuration" type="number" min=".05" max="8" step=".05" value="2.4"></label></div>
+          <p class="help" id="decayHelp">等待模式会保留跨小节长音的谱线，直到长音结束。固定谱头保留，静态行首随首小节消解。</p>
+        </section>
+        <details class="component-settings motion-editor" id="motionEditor" open>
+          <summary>入场与出场特效</summary>
+          <label class="field"><span>编辑对象</span><select id="effectTarget"><option value="note">音符与符杠</option><option value="score">五线谱线 · 按小节</option><option value="mark">记谱标记 · 按小节</option></select></label>
+          <label class="switch-row"><span id="effectEnabledLabel">使用音符入场 / 出场</span><input type="checkbox" id="motionProgramActive" role="switch"></label>
+          <label class="switch-row" id="ledgerMotionField"><span>上下加线跟随音符动效</span><input type="checkbox" id="ledgerMotion" role="switch"></label>
+          <div id="noteTimingControls">
+            <label class="field"><span>音符出现方式</span><select id="noteArrival"><option value="visible">提前显示全部音符</option><option value="assemble">临近演奏时入场</option></select></label>
+            <label class="field"><span>音符出场时机</span><select id="noteExitTrigger"><option value="note">奏完即退场 · 跟随播放</option><option value="measure">所在小节结束后退场</option></select></label>
+          </div>
+          <div class="compact-pair"><label class="field"><span>入场效果</span><select id="enterPreset"></select></label><label class="field"><span>出场效果</span><select id="exitPreset"></select></label></div>
+          <div class="compact-pair"><label class="field"><span>入场时长（秒）</span><input id="enterDuration" type="number" min=".05" max="60" step=".05"></label><label class="field"><span>出场时长（秒）</span><input id="exitDuration" type="number" min=".05" max="60" step=".05"></label></div>
+          <div class="compact-pair" id="animationOffsetControls"><label class="field"><span>入场偏移（秒）</span><input id="enterOffset" type="number" min="-120" max="120" step=".05" aria-describedby="animationOffsetHelp"></label><label class="field"><span>出场偏移（秒）</span><input id="exitOffset" type="number" min="-120" max="120" step=".05" aria-describedby="animationOffsetHelp"></label></div>
+          <p class="help" id="animationOffsetHelp">负值提前，正值延后，范围 −120～120 秒。只调整动画时机；出场偏移与等待时间相加。</p>
+          <label class="field" id="exitDelayField"><span>出场前等待（秒）</span><input id="exitDelay" type="number" min="0" max="60" step=".05"></label>
+          <p class="help" id="effectHint">选择预设会立即应用。入场与出场可自由组合，所有谱面模式通用。</p>
+          <details class="keyframe-editor"><summary>编辑关键帧</summary>
+            <div class="compact-pair"><label class="field"><span>动画阶段</span><select id="effectPhase"><option value="enter">入场</option><option value="exit" selected>出场</option></select></label><label class="field"><span>缓动曲线</span><select id="effectEasing"><option value="linear">线性</option><option value="easeIn">加速</option><option value="easeOut">减速</option><option value="easeInOut">缓入缓出</option></select></label></div>
+            <div id="keyframeTrack" class="keyframe-track" role="group" aria-label="选择关键帧"></div>
+            <div class="keyframe-actions"><button id="addKeyframe" class="text-button">添加中间帧</button><button id="removeKeyframe" class="text-button">删除此帧</button></div>
+            <div class="compact-pair"><label class="field"><span>进度（%）</span><input id="frameAt" type="number" min="0" max="100" step=".1"></label><label class="field"><span>不透明度（%）</span><input id="frameOpacity" type="number" min="0" max="100" step="1"></label></div>
+            <div class="compact-pair"><label class="field"><span>水平位移</span><input id="frameX" type="number" min="-10000" max="10000" step="1"></label><label class="field"><span>垂直位移</span><input id="frameY" type="number" min="-10000" max="10000" step="1"></label></div>
+            <div class="compact-pair"><label class="field"><span>旋转（度）</span><input id="frameRotation" type="number" min="-7200" max="7200" step="1"></label><label class="field"><span>缩放（%）</span><input id="frameScale" type="number" min="0" max="2000" step="1"></label></div>
+            <p class="help">位移使用谱面单位，右 / 下为正。每阶段最多 64 帧；点击时间点切换编辑。</p>
+          </details>
+          <details class="json-editor"><summary>JSON 导入与保存</summary>
+            <label class="field"><span>当前对象的关键帧配置</span><textarea id="motionCode" spellcheck="false" wrap="off" aria-describedby="motionMessage" rows="10" maxlength="32768"></textarea></label>
+            <div class="motion-actions"><button id="applyMotion" class="primary">应用 JSON</button><button id="resetMotion" class="outline">恢复默认</button><button id="importMotion" class="text-button">导入 JSON</button><button id="exportMotion" class="text-button">保存 JSON</button></div>
+            <p class="help">动画 JSON 只作用于当前选中的对象和当前阶段（入场或出场），不会包含布局、颜色、背景、乐谱或导出设置。请使用「导入 JSON」选择文件，检查文本后点击「应用 JSON」；文件必须是本软件的 <code>version: 1</code> 动画程序（包含 <code>name</code>、<code>enter</code>、<code>exit</code>），不读取 AE 工程或插件。</p>
+          </details>
+          <p id="motionMessage" class="help" role="status">预设与关键帧修改即时生效；JSON 编辑后需点击应用。</p>
+        </details>
+        <div class="slider-field"><label for="glow">高光强度 <output id="glowOut">55%</output></label><input id="glow" type="range" min="0" max="100" value="55"></div>
+        <label class="field"><span>高光亮度变化</span><select id="glowMode"><option value="pulse">脉冲 · 直亮直灭</option><option value="sweep">拂处生辉 · 平滑起落</option></select></label>
+        <label class="field"><span>高光空间算法</span><select id="glowShape"><option value="halo">柔和光晕 · 中心扩散</option><option value="edge">边缘泛光 · 沿轮廓</option></select></label>
+        <div id="glowSweepControls" hidden>
+          <div class="slider-field"><label for="glowPeak">高光峰值 <output id="glowPeakOut">100%</output></label><input id="glowPeak" type="range" min="0" max="200" value="100"></div>
+          <div class="slider-field"><label for="glowValley">高光谷值 <output id="glowValleyOut">0%</output></label><input id="glowValley" type="range" min="0" max="100" value="0"></div>
+          <label class="field"><span>余辉 / 覆盖范围（秒）</span><input id="glowRange" type="number" min="0.1" max="12" step="0.1" value="1.4" aria-describedby="glowSweepHelp"></label>
+          <p class="help" id="glowSweepHelp">以扫描线与播放位置为中心向前（未播预亮）、向后（已播余辉）双向扩展。拂处生辉采用对称的平滑起落。峰值是亮度上限（可超 100%），谷值是余辉底色。</p>
+        </div>
+        <div id="glowOffsetControls">
+          <label class="field"><span>发光时间偏移（秒）</span><input id="glowOffset" type="number" min="-12" max="12" step="0.05" value="0" aria-describedby="glowOffsetHelp"></label>
+          <p class="help offset-help" id="glowOffsetHelp">负值提前发光，正值延后发光，范围 −12～12 秒。</p>
+        </div>
+        <div class="slider-field"><label for="glowRadius">高光半径 <output id="glowRadiusOut">100%</output></label><input id="glowRadius" type="range" min="20" max="200" value="100"></div>
+        <div class="slider-field"><label for="glowFeather">高光羽化 <output id="glowFeatherOut">50%</output></label><input id="glowFeather" type="range" min="0" max="100" value="50" aria-describedby="glowTargetHelp"></div>
+        <fieldset id="glowTargetControls" aria-label="高光作用对象">
+          <legend class="quiet">高光作用对象</legend>
+          <label class="switch-row"><span>音符</span><input type="checkbox" id="glowNote" checked role="switch"></label>
+          <label class="switch-row"><span>符杠</span><input type="checkbox" id="glowBeam" checked role="switch"></label>
+          <label class="switch-row"><span>谱号</span><input type="checkbox" id="glowClef" checked role="switch"></label>
+          <label class="switch-row"><span>调号与拍号</span><input type="checkbox" id="glowKeyMeter" checked role="switch"></label>
+          <label class="switch-row"><span>休止符</span><input type="checkbox" id="glowRest" checked role="switch"></label>
+          <label class="switch-row"><span>力度与文字记号</span><input type="checkbox" id="glowMark" checked role="switch"></label>
+          <label class="switch-row"><span>连线与延音线</span><input type="checkbox" id="glowTie" checked role="switch"></label>
+          <label class="switch-row"><span>歌词与演奏记号</span><input type="checkbox" id="glowLyric" checked role="switch"></label>
+          <p class="help" id="glowTargetHelp">取消勾选可让对应元素不参与演奏高光。半径控制光晕扩散倍率，羽化控制光晕边缘的柔和程度。</p>
+        </fieldset>
+        <div class="slider-field"><label for="bloom">光晕范围 <output id="bloomOut">70%</output></label><input id="bloom" type="range" min="0" max="100" value="70"></div>
+        <div class="slider-field"><label for="particles">光粒密度 <output id="particlesOut">75%</output></label><input id="particles" type="range" min="0" max="100" value="75"></div>
+        <div class="slider-field" id="trailField"><label for="trail">音符拖尾 <output id="trailOut">65%</output></label><input id="trail" type="range" min="0" max="100" value="65"></div>
+        <section class="scanline-section" aria-label="扫描线设置">
+          <label class="switch-row"><span>显示扫描线</span><input type="checkbox" id="showLine" checked role="switch" aria-controls="scanlineControls"></label>
+          <fieldset id="scanlineControls" aria-label="扫描线参数">
+            <div class="slider-field" id="anchorField"><label for="anchor">扫描线位置 <output id="anchorOut">34%</output></label><input id="anchor" type="range" min="20" max="70" value="34"></div>
+            <div class="slider-field"><label for="scanLength">扫描线长度 <output id="scanLengthOut">100%</output></label><input id="scanLength" type="range" min="10" max="300" step="5" value="100" aria-describedby="scanlineHelp"></div>
+            <div class="slider-field"><label for="scanGlow">光晕强度 <output id="scanGlowOut">60%</output></label><input id="scanGlow" type="range" min="0" max="100" value="60"></div>
+            <div class="slider-field"><label for="scanBloom">光晕范围 <output id="scanBloomOut">100%</output></label><input id="scanBloom" type="range" min="0" max="300" step="5" value="100"></div>
+          </fieldset>
+          <p class="help range-help" id="scanlineHelp">长度以默认扫描线为 100%。光晕独立于音符高光，强度为 0 时仅保留线条。</p>
+        </section>
+        <label class="switch-row"><span>显示曲名</span><input type="checkbox" id="showTitle" checked role="switch"></label>
+        <section class="color-section"><h2>高光颜色</h2><div class="color-row"><button class="color-swatch active" style="--swatch:#f47c67" data-color="#f47c67" aria-label="珊瑚红" aria-pressed="true"></button><button class="color-swatch" style="--swatch:#e7dfca" data-color="#e7dfca" aria-label="暖白色" aria-pressed="false"></button><button class="color-swatch" style="--swatch:#9ebda9" data-color="#9ebda9" aria-label="鼠尾草绿" aria-pressed="false"></button><label class="custom-color"><input type="color" id="color" value="#f47c67" aria-label="自定义高光颜色"><span>自定义</span></label></div></section>
+      </div>
+      <div class="inspector-content" id="appearancePanel" role="tabpanel" aria-labelledby="appearanceTab" hidden>
+        <label class="field"><span>成片画幅</span><select id="aspect"><option value="16:9">16:9 · 横屏</option><option value="9:16">9:16 · 竖屏</option><option value="1:1">1:1 · 方形</option></select></label>
+        <label class="field"><span>画布主题</span><select id="theme"><option value="dark">夜色 · 深色谱面</option><option value="paper">纸页 · 浅色谱面</option><option value="custom">自定义配色</option></select></label>
+        <div class="palette-fields">
+          <label class="palette-field"><span>背景颜色</span><input type="color" id="backgroundColor" value="#090c0e" aria-label="背景颜色"><input type="text" id="backgroundColorHex" value="#090C0E" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="背景颜色 HEX"></label>
+          <label class="palette-field"><span>音符颜色</span><input type="color" id="noteColor" value="#ecece5" aria-label="音符颜色"><input type="text" id="noteColorHex" value="#ECECE5" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="音符颜色 HEX"></label>
+        </div>
+        <div class="slider-field"><label for="noteOpacity">音符不透明度 <output id="noteOpacityOut">100%</output></label><input id="noteOpacity" type="range" min="0" max="100" value="100"></div>
+        <details class="component-settings" open><summary>谱线、符杠与其他标记</summary><div id="componentControls"></div></details>
+        <p class="help color-help">各组件独立配色。音符包含符头与符干；其他标记包含连线、力度、歌词、谱头等。演奏高光在动效面板设置。</p>
+        <details class="component-settings"><summary>SVG 辅助与记谱检查</summary><p class="help" id="notationReport">导入乐谱后可查看标记检查。</p><button id="downloadSVG" class="outline full">导出原始排版 SVG</button><button id="overlayImport" class="outline full">导入补充标记 SVG</button><button id="overlayRemove" class="text-button" disabled>移除补充标记</button><p class="help" id="overlayStatus">可在原始 SVG 的同一画布上添加缺失标记，再仅保留补充标记导入；沿谱面坐标滚动，不改变播放时间。</p></details>
+        <div class="background-actions"><button id="backgroundImport" class="outline full">添加背景图片</button><button id="removeBackground" class="text-button" disabled>移除</button></div>
+        <p class="help" id="backgroundName">使用纯色背景 · 图片仅在本机读取</p>
+        <div class="slider-field"><label for="backgroundDim">背景遮罩 <output id="backgroundDimOut">45%</output></label><input id="backgroundDim" type="range" min="0" max="100" value="45"></div>
+        <div class="slider-field"><label for="zoom">乐谱大小 <output id="zoomOut">100%</output></label><input id="zoom" type="range" min="50" max="180" value="100"></div>
+        <p class="help" id="staticZoomHint" hidden>静态谱页的 100% 为完整适配。减少每行小节或每页行数，可放大谱字。</p>
+        <label class="field"><span>画面标题</span><input id="titleInput" type="text" maxlength="80" value="Nocturne Op.9 No.2"></label>
+        <p class="help">画幅改变后，流动速度和扫描线会随画布调整。横屏适合完整谱面，竖屏适合旋律片段。</p>
+      </div>
+      <div class="inspector-content" id="audioPanel" role="tabpanel" aria-labelledby="audioTab" hidden>
+        <section class="tempo-section">
+          <h2>乐谱音源</h2>
+          <label class="field sound-field"><span>播放乐器</span><select id="soundSource"><option value="piano">Salamander 真实钢琴</option><option value="vst">VST3 乐器 · Windows</option></select></label>
+          <div id="pianoControls">
+            <p class="help" id="pianoStatus" role="status">Yamaha C5 实录 · 三层力度 · 立体声。首次播放时载入本地采样。</p>
+            <a class="text-button" href="./assets/piano/NOTICE.md" target="_blank" rel="noopener">音源来源与许可</a>
+          </div>
+          <div id="vstControls" hidden>
+            <p class="help" id="vstStatus" role="status">导入本机已安装的 .vst3 乐器，由独立宿主发声。</p>
+            <button id="loadVst" class="outline full">导入 VST3 乐器</button>
+            <div class="sound-actions"><button id="showVst" class="primary full" aria-describedby="vstWindowHint" disabled><svg aria-hidden="true"><use href="#i-settings"/></svg>打开乐器窗口</button><button id="unloadVst" class="text-button" disabled>卸载乐器</button></div>
+            <p class="help" id="vstWindowHint">在乐器窗口中选择音色、调整参数。窗口独立显示；暂停会停止全部音符。仅加载可信插件。</p>
+            <p class="help">VST 声音直接从系统输出，暂不进入 WebM。导出时请切回钢琴，或导入插件渲染的录音。</p>
+          </div>
+        </section>
+        <section class="tempo-section"><h2>延音与发声</h2><p class="help" id="playbackReport">根据延音线连接持续发声，续音符头不重新起音；连奏线不合并独立音符。</p><p class="help" id="playbackWarnings" hidden></p></section>
+        <section class="tempo-section"><h2>乐谱速度变化</h2><p class="help">自动读取 MusicXML 的数字速度标记，光标、谱面和乐器共用速度表。</p><ol id="tempoList" class="tempo-list"></ol><p class="help" id="tempoWarnings" hidden></p></section>
+        <h2>演奏音频</h2><p class="help" id="audioStatus">尚未导入录音。当前使用上方选择的乐器。导入录音后将优先播放录音。</p><button id="audioImport2" class="outline full"><svg><use href="#i-plus"/></svg>添加演奏音频</button>
+        <label class="field offset-field"><span>录音起点偏移（秒）</span><input id="offset" type="number" min="-30" max="30" step=".05" value="0"></label>
+        <p class="help">正值：乐谱开始后，录音延迟进入。负值：跳过录音开头。此版只支持整体偏移；自由速度需在后续版本添加小节对齐点。</p>
+        <button id="removeAudio" class="text-button" disabled>移除录音，使用所选乐器</button>
+      </div>
+      <div class="inspector-footer"><button id="resetStyle" class="text-button">重置效果</button><span>v1.2.2</span></div>
+    </aside>
+    <section class="timeline" aria-label="音画时间轴">
+      <div class="timeline-heading"><h2>时间轴 <span id="barStatus">第 1 小节</span></h2><span class="quiet">点击定位 · 空格播放</span></div>
+      <div class="track-area">
+        <div class="track-labels"><span class="ruler-spacer"></span><span><svg><use href="#i-file"/></svg>乐谱</span><span><svg><use href="#i-audio"/></svg>音频</span></div>
+        <div class="track-content" id="trackContent"><div class="ruler" id="ruler"></div><button class="score-track" id="scoreTrack" aria-label="在乐谱时间轴定位"><span id="trackTitle" data-user-content>Nocturne Op.9 No.2</span><span id="miniNotes" class="mini-notes"></span></button><button class="audio-track" id="audioTrack" aria-label="导入演奏音频"><canvas id="waveform" width="1400" height="70" hidden></canvas><span id="audioTrackPrompt"><svg><use href="#i-plus"/></svg>导入录音以校准</span></button><div class="timeline-playhead" id="timelinePlayhead"><span></span></div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="statusbar"><span id="statusText" role="status">正在初始化乐谱引擎…</span><a href="https://space.bilibili.com/24340298" target="_blank" rel="noopener noreferrer">AI-driven by Taketo</a></footer>
+  <input type="file" id="scoreFile" accept=".xml,.musicxml" hidden>
+  <input type="file" id="audioFile" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac" hidden>
+  <input type="file" id="backgroundFile" accept="image/png,image/jpeg,image/webp" hidden>
+  <input type="file" id="overlayFile" accept="image/svg+xml,.svg" hidden>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <div class="drop-overlay" id="dropOverlay" hidden><svg><use href="#i-file"/></svg><strong>把乐谱或录音放在这里</strong><span>MusicXML · XML · WAV · MP3</span></div>
+  <dialog id="appSettingsDialog" aria-labelledby="appSettingsTitle">
+    <div class="dialog-heading"><h2 id="appSettingsTitle">软件设置</h2><button id="closeAppSettings" class="icon-button" aria-label="关闭设置"><svg><use href="#i-close"/></svg></button></div>
+    <label class="field"><span>界面语言</span><select id="uiLanguage" translate="no"><option value="zh">中文</option><option value="ja">日本語</option><option value="en">English</option></select></label>
+    <label class="field"><span>界面配色</span><select id="uiTheme"><option value="mono">黑白</option><option value="coral">珊瑚</option><option value="sage">青绿</option><option value="blue">冰蓝</option></select></label>
+    <p class="help">仅改变界面，不影响成片。</p>
+    <p id="preferencesStatus" class="help" role="status"></p>
+    <div class="settings-about"><span>流谱 Studio 1.2.2</span><a href="https://space.bilibili.com/24340298" target="_blank" rel="noopener noreferrer">AI-driven by Taketo</a></div>
+  </dialog>
+  <dialog id="exportDialog">
+    <div class="dialog-heading"><h2>导出作品</h2><button class="icon-button" id="closeExport" aria-label="关闭导出面板"><svg><use href="#i-close"/></svg></button></div>
+    <p class="help">将乐谱动画作为合成元件带入 AE 等软件。AE 合成包会附带自动建合成脚本；透明 PNG 序列逐帧生成，不包含声音。</p>
+    <div class="export-options"><label class="field"><span>导出内容</span><select id="exportType"><option value="ae">AE 合成包 · 分层素材 + 自动建合成</option><option value="sequence">PNG 序列 · 透明合成素材</option><option value="png">PNG · 当前画面</option><option value="webm">WebM · 带背景预览视频</option></select></label><label class="field"><span>分辨率</span><select id="resolution"><option value="1080">1080p</option><option value="720">720p</option></select></label></div>
+    <div id="elementOptions"><label class="field"><span>素材内容</span><select id="exportLayer"><option value="composite">完整乐谱效果</option><option value="notation">仅谱面 · 无辉光粒子</option><option value="effects">仅光效 · 辉光与粒子</option><option value="cursor">仅播放光标</option><option value="layers">三层包 · 谱面 / 光效 / 光标</option><option value="element-layers">元素分层包 · 9 层</option></select></label><div class="export-toggles"><label class="switch-row"><span>透明背景</span><input id="exportTransparent" type="checkbox" checked></label><label class="switch-row"><span>包含标题与署名</span><input id="exportTitle" type="checkbox"></label><label class="switch-row"><span>包含播放光标</span><input id="exportCursor" type="checkbox"></label></div><p class="help">AE 合成包会包含三层或元素级序列、manifest.json 和 setup-ae.jsx。元素分层包含五线谱、标记、符杠、音符、演奏光效、谱头、扫描线、背景和标题；所有序列保持相同画布与起始时间。</p></div>
+    <div id="videoOptions"><div class="export-options"><label class="field"><span>开始（秒）</span><input type="number" id="exportStart" min="0" step=".01" value="0"></label><label class="field"><span>结束（秒）</span><input type="number" id="exportEnd" min=".01" step=".01" value="10"></label></div><label class="field" id="fpsField"><span>序列帧率</span><select id="exportFPS"><option value="30">30 fps</option><option value="60">60 fps</option></select></label><p class="help" id="exportModeHelp">离线逐帧渲染，不受预览帧率影响；每包最多 1800 张 PNG 或 600 MB，长曲请分段导出。</p></div>
+    <p id="exportProgress" role="status"></p>
+    <div id="exportResult" class="export-result" hidden><img id="exportImage" alt="导出的乐谱画面" hidden><video id="exportVideo" aria-label="导出视频预览" controls playsinline hidden></video><a id="exportDownload" class="outline" download>下载文件</a><span id="exportSize" class="help"></span></div>
+    <div class="dialog-actions"><button id="cancelRecording" class="outline" hidden>取消生成</button><button id="doExport" class="primary"><svg><use href="#i-export"/></svg>生成 PNG 序列</button></div>
+  </dialog>
+  <div id="engraving" aria-hidden="true"></div>
+  <input id="motionFile" type="file" accept=".json,application/json" hidden>
+</body>
+</html>

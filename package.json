@@ -1,0 +1,26 @@
+{
+  "name": "liupu-studio-prototype",
+  "version": "1.2.2",
+  "private": true,
+  "type": "module",
+  "description": "流谱 Studio · MusicXML 乐谱影像工作台",
+  "main": "desktop/main.mjs",
+  "author": "流谱 Studio",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:native": "node native/build.mjs",
+    "start": "node server.mjs",
+    "desktop": "npm run build && electron .",
+    "prepare:desktop": "npm run build && node scripts/prepare-desktop.mjs",
+    "package:dir": "npm run prepare:desktop && electron-builder --win --x64 --dir --publish never",
+    "package:win": "npm run prepare:desktop && electron-builder --win --x64 --publish never",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "verovio": "6.3.0"
+  },
+  "devDependencies": {
+    "electron": "44.9.1",
+    "electron-builder": "26.15.3"
+  }
+}

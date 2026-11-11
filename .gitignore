@@ -1,0 +1,21 @@
+node_modules/
+dist/
+artifacts/
+*.log
+.npm-cache/
+release/
+.desktop-build/
+
+# IDE / OS / 环境残留目录
+%SystemDrive%/
+NVIDIA Corporation/
+.trae-html-share-packages/
+.impeccable/
+.screenshots/
+.DS_Store
+Thumbs.db
+
+# 临时测试与外部参考复现目录
+x.svg
+score-scroll/
+design/
